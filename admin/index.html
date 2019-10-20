@@ -57,6 +57,14 @@
   </div>
 
   <script>
+    $.ajaxSetup({
+      headers: {
+        Authorization: ' hhhhhh',
+      },
+
+    })
+
+
     $(function() {
       // 找到第二个level01 元素  元素.eq(下标--从0开始) 为他的兄弟元素添加动画 展开效果
       //   slideToggle  状态时展开的就折叠起来  如果是折叠的就展开
@@ -70,34 +78,44 @@
 
       //   登录成功后  获取用户信息  调用接口  除了登录都需要获取token
       $.ajax({
-        url: 'http://localhost:8080/api/v1/admin/user/info',
-        headers: {
-          Authorization: localStorage.getItem('token')
-        },
-        success: function(res) {
-          console.log(res);
+          url: 'http://localhost:8080/api/v1/admin/user/info',
+          // headers: {
+          //   Authorization: localStorage.getItem('token')
+          // },
+          success: function(res) {
+            console.log(res);
 
-          // 修改用户信息
-          $('.user_info>img').attr('src', res.data.userPic);
-          $('.user_info>span').text('欢迎  ' + res.data.nickname);
-          $('.user_center_link>img').attr('src', res.data.userPic)
+            // 修改用户信息
+            $('.user_info>img').attr('src', res.data.userPic);
+            $('.user_info>span').text('欢迎  ' + res.data.nickname);
+            $('.user_center_link>img').attr('src', res.data.userPic)
 
-        },
-        // 如果用户没有登录，不可以获取用户信息，提示去登录
-        error: function(res) {
-          if (res.statusText == 'Forbidden') {
-            alert('请先登录');
-            window.location.href = './login.html';
+          },
+          // 如果用户没有登录，不可以获取用户信息，提示去登录
+          error: function(res) {
+            if (res.statusText == 'Forbidden') {
+              alert('请先登录');
+              window.location.href = './login.html';
 
+            }
           }
+        })
+        // 退出功能
+        // 1 获取按钮（退出按钮在首页） 2 弹框（2个） confirm 3 点击退出 删除本地数据并跳转到页面
+      $('.logout').click(function() {
+        // confirm 有2个值 确定对应true
+        // 删除时友好提示
+        // 如果点击的是确定---true 
+        if (confirm('你真的不爱我了吗')) {
+          // 删除本地数据并跳转到登录页面
+          window.localStorage.removeItem('token');
+          window.location.href = './login.html';
 
         }
 
 
+
       })
-
-
-
 
 
     })
