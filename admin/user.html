@@ -107,32 +107,30 @@
         contentType: false,
         processData: false,
         success: function(backData) {
-          //   console.log(backData);
+          console.log(backData);
           if (backData.code == 200) {
             // 更新父元素的数据
             // 更新的只是iframe，它的父元素也要更新
             window.parent.location.reload();
-
           }
-
-
 
         }
       })
 
-
     })
 
 
+    // 用户图片预览
+    // 1 给输入框添加change事件 2 获取文件--临时地址 dom对象  3 把地址设置给图片的src属性
 
+    $('#exampleInputFile').change(function() {
+      // 获取输入框选择的文件地址  获取文件.files[0]
+      var url = URL.createObjectURL(this.files[0]);
+      //   3 把地址设置给图片的src属性
 
+      $('.user_pic').attr('src', url);
 
-
-
-
-
-
-
+    })
 
 
   })
