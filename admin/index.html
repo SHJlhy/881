@@ -57,12 +57,12 @@
   </div>
 
   <script>
-    $.ajaxSetup({
-      headers: {
-        Authorization: ' hhhhhh',
-      },
+    // $.ajaxSetup({
+    //   headers: {
+    //     Authorization: ' hhhhhh',
+    //   },
 
-    })
+    // })
 
 
     $(function() {
@@ -78,7 +78,8 @@
 
       //   登录成功后  获取用户信息  调用接口  除了登录都需要获取token
       $.ajax({
-          url: 'http://localhost:8080/api/v1/admin/user/info',
+          // url: 'http://localhost:8080/api/v1/admin/user/info',
+          url: BigNew.user_info,
           // headers: {
           //   Authorization: localStorage.getItem('token')
           // },
@@ -92,13 +93,13 @@
 
           },
           // 如果用户没有登录，不可以获取用户信息，提示去登录
-          error: function(res) {
-            if (res.statusText == 'Forbidden') {
-              alert('请先登录');
-              window.location.href = './login.html';
+          // error: function(res) {
+          //   if (res.statusText == 'Forbidden') {
+          //     alert('请先登录');
+          //     window.location.href = './login.html';
 
-            }
-          }
+          //   }
+          // }
         })
         // 退出功能
         // 1 获取按钮（退出按钮在首页） 2 弹框（2个） confirm 3 点击退出 删除本地数据并跳转到页面
