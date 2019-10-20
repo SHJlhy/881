@@ -93,6 +93,38 @@
     })
 
 
+    // 修改用户信息功能...........................
+    // 1 点击修改按钮 调用接口  
+    $('.btn-edit').click(function(e) {
+      e.preventDefault();
+      //   使用FormData 表单对象
+      var data = new FormData(document.querySelector('form'));
+
+      $.ajax({
+        url: BigNew.user_edit,
+        type: 'post',
+        data: data,
+        contentType: false,
+        processData: false,
+        success: function(backData) {
+          //   console.log(backData);
+          if (backData.code == 200) {
+            // 更新父元素的数据
+            // 更新的只是iframe，它的父元素也要更新
+            window.parent.location.reload();
+
+          }
+
+
+
+        }
+      })
+
+
+    })
+
+
+
 
 
 
