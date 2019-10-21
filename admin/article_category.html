@@ -91,7 +91,7 @@
     <td>{{$value.slug}}</td>
     <td class="text-center">
       <a href="#;" data-toggle="modal" class=" btn btn-info btn-xs">编辑</a>
-      <a href="#;" class="btn btn-danger btn-xs">删除</a>
+      <a href="#;" class="btn btn-danger btn-xs btn-del" data-id={{$value.id}}>删除</a>
     </td>
   </tr>
   {{/each}}
@@ -156,6 +156,36 @@
 
     })
 
+    // 删除分类功能.............................
+    // 需要删除的数据都是刷新页面的时候动态添加的，
+    // 所有删除需要用事件委托 给删除标签的父元素添加事件
+
+
+
+    $('tbody').on('click', '.btn-del', function() {
+      // 调用接口
+      // 获取id  删除就是用id  把id通过自定义属性的方式放在被点击的标签内部
+      var id = $(this).attr('data-id');
+      $.ajax({
+        url: BigNew.category_delete,
+        type: 'post',
+        data: {
+          id: id,
+        },
+        success: function(backData) {
+          console.log(backData);
+
+          if (backData.code == 204) {
+            // 如果删除成功刷新页面,重新获取页面数据不刷新页面 调用开始的渲染页面代码
+            loadData();
+          }
+
+        }
+
+      })
+
+
+    })
 
 
 
