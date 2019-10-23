@@ -35,7 +35,7 @@
             <td>奇趣事</td>
             <td>funny</td>
             <td class="text-center">
-              <a href="#;" data-toggle="modal" class=" btn btn-info btn-xs">编辑</a>
+              <a href="#;" data-toggle="modal" class=" btn btn-info btn-xs ">编辑</a>
               <a href="#;" class="btn btn-danger btn-xs">删除</a>
             </td>
           </tr>
@@ -50,7 +50,7 @@
       </table>
     </div>
   </div>
-  <!-- Modal -->
+  <!-- Modal 新增 -->
   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -78,6 +78,36 @@
     </div>
   </div>
 
+  <!-- Modal 编辑 -->
+  <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">文章分类</h4>
+        </div>
+        <div class="modal-body">
+          <form class="editForm">
+            <!-- 隐藏的作用域 添加id -->
+            <input type="hidden" class='edit-id' name="id">
+            <div class="form-group">
+              <label for="exampleInputEmail1">分类名称</label>
+              <input type="text" name="name" class="form-control editName" id="exampleInputEmail1">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">分类别名</label>
+              <input type="text" name="slug" class="form-control editSlug" id="exampleInputPassword1">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary btn-add">确认修改</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 </body>>
 
@@ -90,8 +120,8 @@
     <td>{{$value.name}}</td>
     <td>{{$value.slug}}</td>
     <td class="text-center">
-      <a href="#;" data-toggle="modal" class=" btn btn-info btn-xs">编辑</a>
-      <a href="#;" class="btn btn-danger btn-xs btn-del" data-id={{$value.id}}>删除</a>
+      <a href="#" data-toggle="modal" class=" btn btn-info btn-xs btn-edit">编辑</a>
+      <a href="#" class="btn btn-danger btn-xs btn-del" data-id={{$value.id}}>删除</a>
     </td>
   </tr>
   {{/each}}
@@ -188,8 +218,58 @@
     })
 
 
+    // 编辑文章分类 1 点击编辑 2 弹出弹框 模态框和新增一样 
+    // 3 获取数据 从服务器获取数据才能保证是正确的,调用接口,服务器怎么知道是哪条数据 获取id
+    // 4 修改数据 调用接口,服务器怎么知道你修改的是哪条信息,获取修改的数据的id
+    // 获取数据的id 可以在点击的标签内部以自定义的方式添加id==删除的按钮已经有自定义属性,不用再加了
+    // 数据是动态添加的 添加事件使用事件委托
+    $('tbody').on('click', '.btn-edit', function() {
+      // 显示框显示
 
+      const id = $(this).siblings('.btn-del').attr('data-id');
+      $.ajax({
+        url: BigNew.category_search,
+        data: {
+          id: id,
+        },
+        success: function(backData) {
+          console.log(backData);
+          // 获取成功 先显示数据再显示模态框 防止框显示出来了 内容没有
+          $('.editName').val(backData.data[0].name)
+          $('.editSlug').val(backData.data[0].slug)
+          $('.edit-id').val(backData.data[0].id)
 
+          $('#editModal').modal('show');
+        }
+      })
+    })
+
+    // 修改分类 调用接口 服务器怎么知道是哪条数据修改了 给模态框显示的数据添加id-- - 通过隐藏作用域
+    // 点击确认修改按钮 调用接口 保存修改的数据
+    $('.btn-add').click(function() {
+      const id = $('.edit-id').val();
+      const name = $('.editName').val()
+      const slug = $('.editSlug').val()
+      $.ajax({
+        url: BigNew.category_edit,
+        type: 'post',
+        data: {
+          id: id,
+          name: name,
+          slug: slug,
+        },
+        success: function(backData) {
+          console.log(backData);
+          if (backData.code == 200) {
+            alert('修改成功');
+            // 更新数据
+            loadData();
+            // 隐藏模态框
+            $('#editModal').modal('hide');
+          }
+        }
+      })
+    })
   })
 </script>
 
