@@ -73,9 +73,9 @@
     </div>
   </div>
   <script type='text/html' id='atrtem'>
-    <option data-id="">所有分类</option>
+    <option value="">所有分类</option>
     {{each data}}
-    <option data-id={{$value.id}}>{{$value.name}}</option>
+    <option value={{$value.id}}>{{$value.name}}</option>
     {{/each}}
   </script>
 
@@ -85,7 +85,7 @@
     <tr>
       <td>{{$value.title}}</td>
       <td>{{$value.author}}</td>
-      <td>{{$value.categoryId}}</td>
+      <td>{{$value.category}}</td>
       <td class="text-center">{{$value.date}}</td>
       <td class="text-center">{{$value.state}}</td>
       <td class="text-center" data-id={{$value.id}}>
@@ -123,7 +123,33 @@
         }
       })
 
+      // 筛选.........................................
+      // 点击筛选按钮  调用接口
 
+      $('#btnSearch').click(function(e) {
+        // 阻止默认行为
+        e.preventDefault();
+        // 验证事件是否添加上
+        // console.log(123);
+        const type = $('#selCategory').val();
+        const state = $('#selStatus').val();
+
+        $.ajax({
+
+          url: BigNew.article_query,
+          data: {
+            type: type,
+            state: state,
+          },
+
+          success: function(backData) {
+            console.log(backData);
+            // 调用方法
+            var html = template('art_list', backData)
+            $('tbody').html(html);
+          }
+        })
+      })
     })
   </script>
 </body>
