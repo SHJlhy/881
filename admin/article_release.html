@@ -2,71 +2,166 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>文章列表</title>
-    <link rel="stylesheet" href="./libs/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/iconfont.css">
-    <link rel="stylesheet" href="css/main.css">
-    <!-- jq -->
-    <script src="./libs/jquery-1.12.4.min.js"></script>
-    <!-- 模板引擎 -->
-    <script src="./libs/template-web.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>文章列表</title>
+  <link rel="stylesheet" href="./libs/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/iconfont.css">
+  <link rel="stylesheet" href="css/main.css">
+  <!-- 插入时间插件 -->
+  <link rel="stylesheet" href="./libs/jedate/css/jedate.css">
+  <!-- jq -->
+  <script src="./libs/jquery-1.12.4.min.js"></script>
+  <!-- 模板引擎 -->
+  <script src="./libs/template-web.js"></script>
+  <!-- 插入时间插件 -->
+  <script src="./libs/jedate/js/jedate.js"></script>
+  <!-- 富文本编辑器的js -->
+  <script src="//unpkg.com/wangeditor/release/wangEditor.min.js"></script>
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="common_title">
-            文章编辑
+  <div class="container-fluid">
+    <div class="common_title">
+      文章编辑
+    </div>
+    <div class="container-fluid common_con">
+      <form class="form-horizontal article_form" id="form">
+        <div class="form-group">
+          <label for="inputTitle" class="col-sm-2 control-label">文章标题：</label>
+          <div class="col-sm-10">
+            <input type="text" name="title" class="form-control title" id="inputTitle" value="文章标题文字">
+          </div>
         </div>
-        <div class="container-fluid common_con">
-            <form class="form-horizontal article_form" id="form">
-                <div class="form-group">
-                    <label for="inputTitle" class="col-sm-2 control-label">文章标题：</label>
-                    <div class="col-sm-10">
-                        <input type="text" name="title" class="form-control title" id="inputTitle" value="文章标题文字">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="inputCover" class="col-sm-2 control-label">文章封面：</label>
-                    <div class="col-sm-10">
-                        <img src="images/pic06.jpg" class="article_cover">
-                        <input name="cover" type="file" id="inputCover">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="inputCategory" class="col-sm-2 control-label">文章类别：</label>
-                    <div class="col-sm-4">
-                        <select class="form-control category" name="categoryId">
+        <div class="form-group">
+          <label for="inputCover" class="col-sm-2 control-label">文章封面：</label>
+          <div class="col-sm-10">
+            <img src="images/pic06.jpg" class="article_cover">
+            <input name="cover" type="file" id="inputCover">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputCategory" class="col-sm-2 control-label">文章类别：</label>
+          <div class="col-sm-4">
+            <select class="form-control category" name="categoryId">
                             <option>类别一</option>
                             <option>类别二</option>
                             <option>类别三</option>
                             <option selected>类别四</option>
                             <option>类别五</option>
                         </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">发布时间：</label>
-                    <div class="col-sm-4">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
-                    <div class="col-sm-10">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success btn-release">发布</button>
-                        <button type="submit" class="btn btn-default btn-draft">存为草稿</button>
-                    </div>
-                </div>
-            </form>
+          </div>
         </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">发布时间：</label>
+          <div class="col-sm-2">
+            <!-- 时间插件--------------------------- -->
+            <input type="text" name="date" class="form-control date">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
+          <div class="col-sm-10 editor">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="button" class="btn btn-success btn-release">发布</button>
+            <button type="button" class="btn btn-default btn-draft">存为草稿</button>
+          </div>
+        </div>
+      </form>
     </div>
+  </div>
 </body>
+
+<script type='text/html' id='atrtem'>
+  {{each data}}
+  <option value={{$value.id}}>{{$value.name}}</option>
+  {{/each}}
+</script>
+<script>
+  $(function() {
+
+
+    // 1 图片预览
+    $('#inputCover').change(function() {
+        // 获取输入框的文件dom对象.files[0]
+        const url = URL.createObjectURL(this.files[0]);
+        // 把获取的地址设置给图片的src属性
+        $('.article_cover').attr('src', url)
+
+      })
+      // 获取所有文章类别 复制文章列表的内容
+    $.ajax({
+      url: BigNew.category_list,
+      success: function(backData) {
+        console.log(backData);
+        var html = template('atrtem', backData)
+        $('.category').html(html);
+      }
+    })
+
+    // 时间插件.............................
+    // 初始化日期插件
+    jeDate(".date", {
+      // 年月日
+      format: "YYYY-MM-DD",
+      isTime: false,
+      minDate: "2014-09-19 00:00:00",
+      isinitVal: true,
+      zIndex: 999999
+        // skinCell:'jedateblue'
+    })
+
+
+    // 初始化富文本编辑器
+    var E = window.wangEditor
+    var editor = new E('.editor')
+    editor.create()
+
+
+    // 发布文章的 
+    // 点击发布按钮 调用接口 保存数据  使用表单对象  表单对象通过表单name属性获取值===查看每个表单有没有name 属性 
+    // 有表单控件的直接添加 name属性  没有表单控件的追加
+    // 内容和状态没有 表单控件 追加
+
+    function articlePublish(state) {
+      //   console.log(123);
+      //   获取表单对象 表单对象和获取输入框文件内容都是dom对象
+      const data = new FormData($('form')[0]);
+      //   追加内容
+      data.append('content', editor.txt.html());
+      //   追加状态
+      data.append('state', state);
+      //   调用接口
+      $.ajax({
+        url: BigNew.article_publish,
+        type: 'post',
+        data: data,
+        contentType: false,
+        processData: false,
+        success: function(backData) {
+          console.log(backData);
+
+          if (backData.code == 200) {
+            alert(backData.msg)
+
+          }
+        }
+      })
+    }
+    $('.btn-release').click(function() {
+      articlePublish('已发布')
+    })
+
+    // 发布草稿和发布文章一样的 只是发布状态不一样
+    $('.btn-draft').click(function() {
+      articlePublish('草稿')
+    })
+  })
+</script>
 
 </html>
