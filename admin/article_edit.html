@@ -29,6 +29,7 @@
     </div>
     <div class="container-fluid common_con">
       <form class="form-horizontal article_form" id="form">
+        <input type="hidden" class='edit_id' name='id'>
         <div class="form-group">
           <label for="inputTitle" class="col-sm-2 control-label">文章标题：</label>
           <div class="col-sm-10">
@@ -68,17 +69,36 @@
         </div>
         <div class="form-group">
           <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-success btn-edit">修改</button>
-            <button type="submit" class="btn btn-default btn-draft">存为草稿</button>
+            <button type="button" class="btn btn-success btn-edit">修改</button>
+            <button type="button" class="btn btn-default btn-draft">存为草稿</button>
           </div>
         </div>
       </form>
     </div>
   </div>
 </body>
+<!-- 定义模板  分类选项-->
+<script type="text/html" id="cateTem">
+  <!-- 下面这部分根据数据生成 -->
+  {{each data}}
+  <option value="{{$value.id}}">{{$value.name}}</option>
+  {{/each}}
+</script>
 
 <script>
   $(function() {
+    //   获取文章类别
+    // 一.获取文章分类数据
+    $.ajax({
+      url: BigNew.category_list,
+      success: function(backData) {
+        console.log(backData);
+        // 调用方法
+        var res = template('cateTem', backData);
+        // 渲染到页面上
+        $('.category').html(res);
+      }
+    })
 
 
     // 初始化日期插件
@@ -96,6 +116,12 @@
     var E = window.wangEditor
     var editor = new E('.editor')
     editor.create()
+
+    // 本地图片预览
+    $('#inputCover').change(function() {
+      var url = URL.createObjectURL(this.files[0]);
+      $('.article_cover').attr('src', url);
+    })
 
 
     // 文章编辑 思路是  文章列表点击编辑跳转到文章编辑页面 跳转的时候携带数据，通过id携带过来
@@ -131,9 +157,38 @@
         $(".article_cover").attr('src', backData.data.cover);
         $('.date').val(backData.data.date);
         editor.txt.html(backData.data.content);
+        $('.edit_id').val(backData.data.id);
       }
     })
 
+    // 编辑信息
+    // 通过表单对象获取修改的信息 调用接口  服务器怎么知道你修改的哪条数据，隐藏域
+
+    $('.btn-edit').click(function() {
+      //   console.log(123);
+      var data = new FormData($("form")[0]);
+      data.append('content', editor.txt.html());
+      data.append('state', '已发布');
+      //   调用接口
+      $.ajax({
+        url: BigNew.article_edit,
+        type: 'post',
+        data: data,
+        contentType: false,
+        processData: false,
+        success: function(backData) {
+          console.log(backData);
+          if (backData.code == 200) {
+            alert(backData.msg);
+
+          }
+
+
+        }
+      })
+
+
+    })
 
 
   })
