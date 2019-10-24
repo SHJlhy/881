@@ -144,6 +144,19 @@
               // console.log(event);
               // console.log(page);
               // page就是 当前的页码
+              // 点击页码  获取当前页的数据 调用接口 获取
+              $.ajax({
+                url: BigNew.article_query,
+                data: {
+                  perpage: 10,
+                  page: page,
+                },
+                success: function(backData) {
+                  var html = template('art_list', backData)
+                  $('tbody').html(html);
+                }
+
+              })
             }
           });
 
