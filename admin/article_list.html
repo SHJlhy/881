@@ -73,22 +73,57 @@
     </div>
   </div>
   <script type='text/html' id='atrtem'>
+    <option data-id="">所有分类</option>
     {{each data}}
-    <option>{{$value.name}}</option>
+    <option data-id={{$value.id}}>{{$value.name}}</option>
+    {{/each}}
+  </script>
+
+  <!-- 数据列表 模板 -->
+  <script type='text/html' id="art_list">
+    {{each data.data}}
+    <tr>
+      <td>{{$value.title}}</td>
+      <td>{{$value.author}}</td>
+      <td>{{$value.categoryId}}</td>
+      <td class="text-center">{{$value.date}}</td>
+      <td class="text-center">{{$value.state}}</td>
+      <td class="text-center" data-id={{$value.id}}>
+        <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
+        <a href="javascript:void(0);" class="btn btn-danger btn-xs delete">删除</a>
+      </td>
+    </tr>
     {{/each}}
   </script>
   <script>
-    //   1 获取所有分类 模板引擎 1 定义模板 
-    // 2 添加type属性和定义id 3 调用接口 获取数据 关键部分挖坑4 调用方法 有返回值
-    // 5  把返回值在页面中渲染
+    $(function() {
 
-    $.ajax({
-      url: BigNew.category_list,
-      success: function(backData) {
-        console.log(backData);
-        var html = template('atrtem', backData)
-        $('#selCategory').html(html);
-      }
+      //   1 获取所有分类 模板引擎 1 定义模板 
+      // 2 添加type属性和定义id 3 调用接口 获取数据 关键部分挖坑4 调用方法 有返回值
+      // 5  把返回值在页面中渲染 有id的数据最好开始的时候就放进去
+
+      $.ajax({
+        url: BigNew.category_list,
+        success: function(backData) {
+          console.log(backData);
+          var html = template('atrtem', backData)
+          $('#selCategory').html(html);
+        }
+      })
+
+
+      // 获取所有列表数据  数据一条一条的  模板引擎 ...............................
+      $.ajax({
+        url: BigNew.article_query,
+        success: function(backData) {
+          console.log(backData);
+          // 调用方法
+          var html = template('art_list', backData)
+          $('tbody').html(html);
+        }
+      })
+
+
     })
   </script>
 </body>
