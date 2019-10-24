@@ -93,7 +93,7 @@
       <td class="text-center">{{$value.date}}</td>
       <td class="text-center">{{$value.state}}</td>
       <td class="text-center" data-id={{$value.id}}>
-        <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
+        <a href="article_edit.html?id={{$value.id}}" class="btn btn-default btn-xs">编辑</a>
         <a href="javascript:void(0);" class="btn btn-danger btn-xs delete">删除</a>
       </td>
     </tr>
@@ -208,7 +208,7 @@
         // 分页插件.......................................
         // 分页插件放在最后面 总页数是写死的，放在哪呢,放在有数据的地方  放在获取所有列表数据的地方
 
-
+      // 文章列表点击编辑跳转到文章编辑页面 跳转需要携带id 得把这条数据的信息携带过去，在路径后面id的添加参数
 
     })
   </script>
