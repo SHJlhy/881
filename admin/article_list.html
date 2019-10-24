@@ -145,11 +145,16 @@
               // console.log(page);
               // page就是 当前的页码
               // 点击页码  获取当前页的数据 调用接口 获取
+              // 点击筛选 当前页获取的数据不对 没有写筛选的参数
+              const type = $('#selCategory').val();
+              const state = $('#selStatus').val();
               $.ajax({
                 url: BigNew.article_query,
                 data: {
                   perpage: 10,
                   page: page,
+                  type: type,
+                  state: state,
                 },
                 success: function(backData) {
                   var html = template('art_list', backData)
@@ -158,6 +163,7 @@
 
               })
             }
+
           });
 
         }
@@ -180,6 +186,8 @@
             data: {
               type: type,
               state: state,
+              perpage: 10,
+
             },
 
             success: function(backData) {
@@ -187,6 +195,13 @@
               // 调用方法
               var html = template('art_list', backData)
               $('tbody').html(html);
+              // 修改筛选的总页数
+              // console.log(res);
+              // 重新设置总页数
+              // changeTotalPages 固定的写法 调用插件内部的一个方法
+              // 参数1 新的总页数 backData.data.totalPage
+              // 参数2 当前页  1
+              $('#pagination-demo').twbsPagination('changeTotalPages', backData.data.totalPage, 1);
             }
           })
         })
